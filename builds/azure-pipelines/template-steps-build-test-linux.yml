@@ -127,7 +127,7 @@ steps:
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
-- script: dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/result.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
+- script: dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/coverageResult.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
   displayName: '.NET Test'
   env:
     SA_PASSWORD: '$(serverPassword)'
@@ -136,7 +136,7 @@ steps:
   displayName: 'Publish Code Coverage Results'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/TestResults/coverage/result.xml'
+    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverageResult.xml'
 
 - script: |
     docker stop sql1
