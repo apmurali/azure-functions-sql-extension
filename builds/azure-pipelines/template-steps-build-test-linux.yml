@@ -129,7 +129,7 @@ steps:
 
 - script: |
     mkdir $(Build.ArtifactStagingDirectory)\TestResults\coverage
-    dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)\TestResults\coverage\coverage.cobertura.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
+    dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
   displayName: '.NET Test'
   env:
     SA_PASSWORD: '$(serverPassword)'
@@ -138,7 +138,7 @@ steps:
   displayName: 'Publish Code Coverage Results'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.ArtifactStagingDirectory)\TestResults\coverage\coverage.cobertura.xml'
+    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml'
 
 - script: |
     docker stop sql1
