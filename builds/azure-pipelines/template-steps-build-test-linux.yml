@@ -16,6 +16,9 @@ steps:
 - script: npm install -g azurite
   displayName: 'Install Azurite Local Storage Emulator'
 
+- script: dotnet tool install --global dotnet-coverage
+  displayName: 'Install dotnet-coverage'
+
 - task: DockerInstaller@0
   displayName: Docker Installer
   inputs:
@@ -124,14 +127,8 @@ steps:
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
-- task: DotNetCoreCLI@2
+- script: dotnet-coverage collect "dotnet test" -o coverage.cobertura.xml -f xml -s .\test\runsettings.xml
   displayName: '.NET Test'
-  env:
-    SA_PASSWORD: '$(serverPassword)'
-  inputs:
-    command: test
-    projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.ArtifactStagingDirectory)\TestResults\coverage\ /p:Exclude="[*]Microsoft.Azure.WebJobs.Extensions.Sql.Samples.*"'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage Results'
