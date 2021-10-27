@@ -127,9 +127,10 @@ steps:
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
-- script: |
-    mkdir $(Build.ArtifactStagingDirectory)/TestResults/coverage
-    dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
+- script: mkdir $(Build.ArtifactStagingDirectory)/TestResults/coverage
+  displayName: 'Create Coverage Results Folder'
+
+- script: dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
   displayName: '.NET Test'
   env:
     SA_PASSWORD: '$(serverPassword)'
