@@ -128,7 +128,7 @@ steps:
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
 - script: |
-    mkdir $(Build.ArtifactStagingDirectory)\TestResults\coverage
+    mkdir $(Build.ArtifactStagingDirectory)/TestResults/coverage
     dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f xml -s $(Build.SourcesDirectory)/test/runsettings.xml
   displayName: '.NET Test'
   env:
