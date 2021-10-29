@@ -135,7 +135,7 @@ steps:
   displayName: 'dotnet test'
   inputs:
     command: 'test'
-    arguments: '--logger trx -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml'
+    arguments: '--logger trx -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -s $(Build.SourcesDirectory)/test/runsettings.xml'
   env:
     SA_PASSWORD: '$(serverPassword)'
 
