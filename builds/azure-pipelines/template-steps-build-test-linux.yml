@@ -133,7 +133,7 @@ steps:
 
 - script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/TestResults/coverage
-    dotnet-coverage collect "dotnet test --logger trx" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml
+    dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml
   displayName: '.NET Test'
   env:
     SA_PASSWORD: '$(serverPassword)'
