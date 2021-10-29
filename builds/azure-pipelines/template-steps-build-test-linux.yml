@@ -16,9 +16,6 @@ steps:
 - script: npm install -g azurite
   displayName: 'Install Azurite Local Storage Emulator'
 
-- script: dotnet tool install --global dotnet-coverage
-  displayName: 'Install dotnet-coverage'
-
 - task: DockerInstaller@0
   displayName: Docker Installer
   inputs:
@@ -127,18 +124,25 @@ steps:
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
-- script: mkdir -p $(Build.ArtifactStagingDirectory)/TestResults/coverage
-  displayName: 'Create Coverage Results Folder'
+- task: DotNetCoreCLI@2
+  displayName: 'Install global code coverage tool'
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install -g dotnet-coverage'
 
-- script: dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml
-  displayName: '.NET Test'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: 'test'
+    arguments: '--logger trx -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml'
   env:
     SA_PASSWORD: '$(serverPassword)'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage Results'
   inputs:
-    codeCoverageTool: Cobertura
+    codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml'
 
 - script: |
