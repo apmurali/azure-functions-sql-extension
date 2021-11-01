@@ -125,7 +125,7 @@ steps:
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:PackageVersion="${{ parameters.nugetVersion }}-preview" -p:GeneratePackageOnBuild=false'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Install global code coverage tool'
+  displayName: 'Install Global Code Coverage Tool'
   inputs:
     command: custom
     custom: tool
@@ -133,10 +133,13 @@ steps:
 
 - script: |
     mkdir -p $(Build.ArtifactStagingDirectory)/TestResults/coverage
-    dotnet-coverage collect "dotnet test" -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml
+    dotnet-coverage collect -o $(Build.ArtifactStagingDirectory)/TestResults/coverage/coverage.cobertura.xml -f cobertura -s $(Build.SourcesDirectory)/test/runsettings.xml -id testsession "dotnet test"
   displayName: '.NET Test'
   env:
     SA_PASSWORD: '$(serverPassword)'
+
+- script: dotnet-coverage shutdown testsession
+  displayName: 'Stop Code Coverage Collector'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage Results'
