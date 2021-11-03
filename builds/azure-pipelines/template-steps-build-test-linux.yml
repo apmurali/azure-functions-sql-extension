@@ -55,7 +55,7 @@ steps:
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage"'
+    arguments: '--configuration ${{ parameters.configuration }} --collect "Code Coverage" ${{ parameters.testFilter }}'
 
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK 2.1.x for CodeSign'
