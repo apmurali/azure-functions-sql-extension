@@ -54,7 +54,7 @@ steps:
     SA_PASSWORD: '$(serverPassword)'
   inputs:
     command: test
-    projects: '${{ parameters.solution }}'
+    projects: '**/*.Tests.csproj'
     arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage"'
 
 - task: UseDotNet@2
