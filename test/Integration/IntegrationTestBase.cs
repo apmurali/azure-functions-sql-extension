@@ -58,7 +58,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
         /// </summary>
         protected int Port { get; private set; } = 7071;
 
-        public IntegrationTestBase(ITestOutputHelper output)
+        public IntegrationTestBase(ITestOutputHelper output = null)
         {
             this.TestOutput = output;
 
