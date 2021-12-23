@@ -104,7 +104,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
             }
 
             this.MasterConnectionString = connectionStringBuilder.ToString();
-            Console.Write(this.MasterConnectionString);
 
             // Create database
             this.DatabaseName = TestUtils.GetUniqueDBName("SqlBindingsTest");
@@ -129,7 +128,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
 
             // Set SqlConnectionString env var for the Function to use
             Environment.SetEnvironmentVariable("SqlConnectionString", connectionStringBuilder.ToString());
-            Console.Write("DATABASE SETUP DONE");
         }
 
         /// <summary>

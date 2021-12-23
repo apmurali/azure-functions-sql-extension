@@ -11,10 +11,10 @@ using Xunit;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
+using System.Diagnostics;
 
 namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
 {
-    [Collection("Performanetests")]
     public class SqlInputBindingPerformanceTests : IntegrationTestBase
     {
 
@@ -30,10 +30,9 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
         }
 
         [Benchmark]
-        public async Task<HttpResponseMessage> GetProductsTest()
+        [Arguments(10, 100)]
+        public async Task<HttpResponseMessage> GetProductsTest(int n, int cost)
         {
-            int n = 0;
-            int cost = 100;
             this.StartFunctionHost(nameof(GetProducts));
 
             // Generate T-SQL to insert n rows of data with cost
@@ -78,12 +77,14 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
 
     public class Program
     {
-        public static void Main(string[] _)
+        [Fact]
+        public void PerformanceTest()
         {
-            BenchmarkRunner.Run<SqlInputBindingPerformanceTests>(
+            BenchmarkDotNet.Reports.Summary result = BenchmarkRunner.Run<SqlInputBindingPerformanceTests>(
                 ManualConfig
                     .Create(DefaultConfig.Instance)
                     .WithOptions(ConfigOptions.DisableOptimizationsValidator));
+            Debug.WriteLine(result);
         }
     }
 }
