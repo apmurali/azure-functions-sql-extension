@@ -79,7 +79,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
             string testServer = Environment.GetEnvironmentVariable("TEST_SERVER");
             if (string.IsNullOrEmpty(testServer))
             {
-                testServer = "localhost";
+                testServer = "localhost\\SQLEXPRESS";
             }
 
             // First connect to master to create the database
@@ -104,6 +104,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
             }
 
             this.MasterConnectionString = connectionStringBuilder.ToString();
+            Console.Write(this.MasterConnectionString);
 
             // Create database
             this.DatabaseName = TestUtils.GetUniqueDBName("SqlBindingsTest");
@@ -128,6 +129,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
 
             // Set SqlConnectionString env var for the Function to use
             Environment.SetEnvironmentVariable("SqlConnectionString", connectionStringBuilder.ToString());
+            Console.Write("DATABASE SETUP DONE");
         }
 
         /// <summary>
@@ -163,13 +165,14 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
                 // We cannot both use shell execute and redirect output at the same time: https://docs.microsoft.com//dotnet/api/system.diagnostics.processstartinfo.redirectstandardoutput#remarks
                 FileName = GetFunctionsCoreToolsPath(),
                 Arguments = $"start --verbose --port {this.Port} --functions {functionName}",
-                WorkingDirectory = useTestFolder ? GetPathToBin() : Path.Combine(GetPathToBin(), "SqlExtensionSamples"),
+                WorkingDirectory = "C:\\Users\\luczhan\\GitProjects\\azure-functions-sql-extension\\test\\bin\\Debug\\netcoreapp3.1\\SqlExtensionSamples",
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false
             };
-            this.TestOutput.WriteLine($"Starting {startInfo.FileName} {startInfo.Arguments} in {startInfo.WorkingDirectory}");
+            Console.Write(useTestFolder);
+            this.TestOutput?.WriteLine($"Starting {startInfo.FileName} {startInfo.Arguments} in {startInfo.WorkingDirectory}");
             this.FunctionHost = new Process
             {
                 StartInfo = startInfo
@@ -178,8 +181,8 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
             this.FunctionHost.ErrorDataReceived += this.TestOutputHandler;
 
             this.FunctionHost.Start();
-            this.FunctionHost.BeginOutputReadLine();
-            this.FunctionHost.BeginErrorReadLine();
+            // this.FunctionHost.BeginOutputReadLine();
+            // this.FunctionHost.BeginErrorReadLine();
 
             Thread.Sleep(10000);     // This is just to give some time to func host to start, maybe there's a better way to do this (check if port's open?)
         }
@@ -188,17 +191,17 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
         {
             // Determine npm install path from either env var set by pipeline or OS defaults
             // Pipeline env var is needed as the Windows hosted agents installs to a non-traditional location
-            string nodeModulesPath = Environment.GetEnvironmentVariable("NODE_MODULES_PATH");
-            if (string.IsNullOrEmpty(nodeModulesPath))
-            {
-                nodeModulesPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"npm\node_modules\") :
-                    @"/usr/local/lib/node_modules";
-            }
+            // string nodeModulesPath = Environment.GetEnvironmentVariable("NODE_MODULES_PATH");
+            // if (string.IsNullOrEmpty(nodeModulesPath))
+            // {
+            //     nodeModulesPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+            //         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"npm\node_modules\") :
+            //         @"/usr/local/lib/node_modules";
+            // }
 
             string funcExe = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "func.exe" : "func";
-            string funcPath = Path.Combine(nodeModulesPath, "azure-functions-core-tools", "bin", funcExe);
-
+            // string funcPath = Path.Combine(nodeModulesPath, "azure-functions-core-tools", "bin", funcExe);
+            string funcPath = Path.Combine("C:\\Program Files\\Microsoft\\Azure Functions Core Tools", funcExe);
             if (!File.Exists(funcPath))
             {
                 throw new FileNotFoundException("Azure Function Core Tools not found at " + funcPath);
@@ -211,14 +214,14 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
         {
             if (e != null && !string.IsNullOrEmpty(e.Data))
             {
-                this.TestOutput.WriteLine(e.Data);
+                this.TestOutput?.WriteLine(e.Data);
             }
         }
 
         protected async Task<HttpResponseMessage> SendGetRequest(string requestUri, bool verifySuccess = true)
         {
             string timeStamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", System.Globalization.CultureInfo.InvariantCulture);
-            this.TestOutput.WriteLine($"[{timeStamp}] Sending GET request: {requestUri}");
+            this.TestOutput?.WriteLine($"[{timeStamp}] Sending GET request: {requestUri}");
 
             if (string.IsNullOrEmpty(requestUri))
             {
@@ -238,7 +241,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
 
         protected async Task<HttpResponseMessage> SendPostRequest(string requestUri, string json, bool verifySuccess = true)
         {
-            this.TestOutput.WriteLine("Sending POST request: " + requestUri);
+            this.TestOutput?.WriteLine("Sending POST request: " + requestUri);
 
             if (string.IsNullOrEmpty(requestUri))
             {

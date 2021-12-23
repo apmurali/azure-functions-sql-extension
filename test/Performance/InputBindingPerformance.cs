@@ -18,6 +18,10 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
     public class SqlInputBindingPerformanceTests : IntegrationTestBase
     {
 
+        public SqlInputBindingPerformanceTests() : base()
+        {
+        }
+
         private async Task<HttpResponseMessage> SendInputRequest(string functionName, string query = "")
         {
             string requestUri = $"http://localhost:{this.Port}/api/{functionName}/{query}";
