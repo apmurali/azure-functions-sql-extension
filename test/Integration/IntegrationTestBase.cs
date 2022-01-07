@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -181,7 +180,18 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration
             this.FunctionHost.BeginOutputReadLine();
             this.FunctionHost.BeginErrorReadLine();
 
-            Thread.Sleep(10000);     // This is just to give some time to func host to start, maybe there's a better way to do this (check if port's open?)
+            while (true)
+            {
+                try
+                {
+                    DateTime startTime = this.FunctionHost.StartTime;
+                    break;
+                }
+                catch (Exception)
+                {
+                    // no-op
+                }
+            }
         }
 
         private static string GetFunctionsCoreToolsPath()
