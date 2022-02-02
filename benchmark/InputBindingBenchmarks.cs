@@ -7,19 +7,16 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Extensions.Sql.Samples.Common;
 using Microsoft.Azure.WebJobs.Extensions.Sql.Samples.InputBindingSamples;
 using Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Integration;
-using Xunit;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Configs;
-using System.Diagnostics;
 
-namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
+namespace Microsoft.Azure.WebJobs.Extensions.Sql.Benchmark
 {
-    public class SqlInputBindingPerformanceTests : IntegrationTestBase
+    public class InputBindingBenchmarks : IntegrationTestBase
     {
 
-        public SqlInputBindingPerformanceTests() : base()
+        public InputBindingBenchmarks() : base()
         {
+            this.SetupDatabase();
         }
 
         private async Task<HttpResponseMessage> SendInputRequest(string functionName, string query = "")
@@ -72,19 +69,6 @@ namespace Microsoft.Azure.WebJobs.Extensions.Sql.Tests.Performance
             }
 
             this.ExecuteNonQuery(queryBuilder.ToString());
-        }
-    }
-
-    public class Program
-    {
-        [Fact]
-        public void PerformanceTest()
-        {
-            BenchmarkDotNet.Reports.Summary result = BenchmarkRunner.Run<SqlInputBindingPerformanceTests>(
-                ManualConfig
-                    .Create(DefaultConfig.Instance)
-                    .WithOptions(ConfigOptions.DisableOptimizationsValidator));
-            Debug.WriteLine(result);
         }
     }
 }

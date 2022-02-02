@@ -1,0 +1,6 @@
+# See https://github.com/dotnet/roslyn-analyzers/blob/main/.editorconfig for an example on different settings and how they're used
+
+[*.cs]
+
+# Disabled
+dotnet_diagnostic.CA1305.severity = silent # Specify IFormatProvider - this isn't important for tests and just adds clutter
