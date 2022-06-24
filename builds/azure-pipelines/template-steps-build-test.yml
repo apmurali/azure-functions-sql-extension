@@ -215,7 +215,7 @@ steps:
   inputs:
     command: test
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage;Format=Cobertura" -r "$(Build.StagingDirectory)\tests" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
+    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage;Format=Cobertura" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
   condition: ne(variables['Agent.OS'], 'linux')
 
 - task: DotNetCoreCLI@2
@@ -226,8 +226,13 @@ steps:
   inputs:
     command: test
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage;Format=Cobertura" -r "$(Build.StagingDirectory)\tests" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
+    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect "Code Coverage;Format=Cobertura" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
   condition: eq(variables['Agent.OS'], 'linux')
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: $(Agent.TempDirectory)/**/coverage.xml
 
 - script: |
     docker stop sql1
