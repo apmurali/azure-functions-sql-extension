@@ -215,7 +215,7 @@ steps:
   inputs:
     command: test
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect:"Code Coverage;Format=Cobertura" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
+    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect:"Code Coverage" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
   condition: ne(variables['Agent.OS'], 'linux')
 
 - task: DotNetCoreCLI@2
@@ -226,7 +226,15 @@ steps:
   inputs:
     command: test
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect:"Code Coverage;Format=Cobertura" -s $(Build.SourcesDirectory)/test/coverage.runsettings'
+    arguments: '--configuration ${{ parameters.configuration }} ${{ parameters.testFilter }} --collect:"Code Coverage" -s $(Build.SourcesDirectory)/test/coverage.runsettings -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+    publishTestResults: true
+  condition: eq(variables['Agent.OS'], 'linux')
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
   condition: eq(variables['Agent.OS'], 'linux')
 
 - script: |
