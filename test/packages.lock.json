@@ -49,12 +49,9 @@
       },
       "xunit.runner.visualstudio": {
         "type": "Direct",
-        "requested": "[2.4.0, )",
-        "resolved": "2.4.0",
-        "contentHash": "3eq5cGXbEJkqW9nwLuXwtxy9B5gMA8i7HW4rN63AhAvy5UvEcQbZnve23wx/oPrkyg/4CbfNhxkBezS0b1oUdQ==",
-        "dependencies": {
-          "Microsoft.NET.Test.Sdk": "15.0.0"
-        }
+        "requested": "[2.4.5, )",
+        "resolved": "2.4.5",
+        "contentHash": "OwHamvBdUKgqsXfBzWiCW/O98BTx81UKzx2bieIOQI7CZFE5NEQZGi8PBQGIKawDW96xeRffiNf20SjfC0x9hw=="
       },
       "Azure.Core": {
         "type": "Transitive",
