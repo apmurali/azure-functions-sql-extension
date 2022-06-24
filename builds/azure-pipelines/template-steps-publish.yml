@@ -47,3 +47,9 @@ steps:
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'drop'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact temp'
+  inputs:
+    targetPath: '$(Agent.TempDirectory)'
+    artifactName: 'temp'

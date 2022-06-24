@@ -230,9 +230,10 @@ steps:
   condition: eq(variables['Agent.OS'], 'linux')
 
 - task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from temp dir'
   inputs:
     codeCoverageTool: 'Cobertura'
-    summaryFileLocation: $(Agent.TempDirectory)/**/coverage.xml
+    summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
 
 - script: |
     docker stop sql1
